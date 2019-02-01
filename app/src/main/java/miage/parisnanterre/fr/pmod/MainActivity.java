@@ -23,9 +23,21 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
+    private static final int CORE_POOL_SIZE = CPU_COUNT + 1;
+    private static final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;
+    private static final int KEEP_ALIVE = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
@@ -60,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         recycler.setAdapter(adapter);
 
 
+        ThreadFactoryIMG sThreadFactory = new ThreadFactoryIMG();
         //handler
         //HandlerDownload h = new HandlerDownload(films,adapter,this);
         HandlerThread handlerThread = new HandlerThread("handler");
@@ -67,8 +80,17 @@ public class MainActivity extends AppCompatActivity {
 
         Looper looper = handlerThread.getLooper();
 
+
         Handler handler = new Handler(looper);
         handler.post(new HandlerDownload(films,adapter,this));
+        Executor THREAD_POOL_EXECUTOR
+                = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
+                TimeUnit.SECONDS, sPoolWorkQueue, sThreadFactory);
+
+        for (Film f : films) {
+           THREAD_POOL_EXECUTOR.execute(new HandlerDownload(films,adapter,this));
+        }
+
 
         //h.doStuff();
         /*
@@ -88,4 +110,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
+
+    private static final BlockingQueue<Runnable> sPoolWorkQueue =
+            new LinkedBlockingQueue<Runnable>(128);
+
+
 }
