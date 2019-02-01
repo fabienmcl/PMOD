@@ -11,10 +11,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -59,12 +65,34 @@ public class MainActivity extends AppCompatActivity {
         handlerThread.start();
 
         Looper looper = handlerThread.getLooper();
+
         Handler handler = new Handler(looper);
 
-        /*handler.post(new Runnable {
+        handler.post(new Runnable () {
 
-        })
-        */
+            @Override
+            public void run() {
+                for (Film f : films) {
+
+                    Bitmap bm = null;
+                    try {
+                        URL aURL = new URL("http://lorempixel.com/100/100");
+                        URLConnection conn = aURL.openConnection();
+                        conn.connect();
+                        InputStream is = conn.getInputStream();
+                        BufferedInputStream bis = new BufferedInputStream(is);
+                        bm = BitmapFactory.decodeStream(bis);
+                        bis.close();
+                        is.close();
+                    } catch (IOException e) {
+                        Log.e("Hub","Error getting the image from server : " + e.getMessage().toString());
+                    }
+                    f.setImage(bm);
+                    //adapter.notifyDataSetChanged();
+                }
+            }
+        });
+/*
         //async
         b.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+*/
 
 
 
