@@ -61,9 +61,17 @@ public class MainActivity extends AppCompatActivity {
 
 
         //handler
-        HandlerDownload h = new HandlerDownload(films,adapter,this);
-        h.doStuff();
-/*
+        //HandlerDownload h = new HandlerDownload(films,adapter,this);
+        HandlerThread handlerThread = new HandlerThread("handler");
+        handlerThread.start();
+
+        Looper looper = handlerThread.getLooper();
+
+        Handler handler = new Handler(looper);
+        handler.post(new HandlerDownload(films,adapter,this));
+
+        //h.doStuff();
+        /*
         //async
         b.setOnClickListener(new View.OnClickListener() {
             @Override
