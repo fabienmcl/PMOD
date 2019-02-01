@@ -61,37 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         //handler
-        HandlerThread handlerThread = new HandlerThread("handler");
-        handlerThread.start();
-
-        Looper looper = handlerThread.getLooper();
-
-        Handler handler = new Handler(looper);
-
-        handler.post(new Runnable () {
-
-            @Override
-            public void run() {
-                for (Film f : films) {
-
-                    Bitmap bm = null;
-                    try {
-                        URL aURL = new URL("http://lorempixel.com/100/100");
-                        URLConnection conn = aURL.openConnection();
-                        conn.connect();
-                        InputStream is = conn.getInputStream();
-                        BufferedInputStream bis = new BufferedInputStream(is);
-                        bm = BitmapFactory.decodeStream(bis);
-                        bis.close();
-                        is.close();
-                    } catch (IOException e) {
-                        Log.e("Hub","Error getting the image from server : " + e.getMessage().toString());
-                    }
-                    f.setImage(bm);
-                    //adapter.notifyDataSetChanged();
-                }
-            }
-        });
+        HandlerDownload h = new HandlerDownload(films,adapter,this);
+        h.doStuff();
 /*
         //async
         b.setOnClickListener(new View.OnClickListener() {
