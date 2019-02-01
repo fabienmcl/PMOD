@@ -12,19 +12,20 @@ import android.util.Log;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 
 public class HandlerDownload  implements Runnable {
     List<Film> films;
-    CinemaAdapter adapter;
-    Activity a;
+    WeakReference<CinemaAdapter> adapter;
+    WeakReference<Activity> a;
 
     public HandlerDownload(List<Film> films, CinemaAdapter adapter, Activity a) {
         this.films = films;
-        this.adapter = adapter;
-        this.a=a;
+        this.adapter = new WeakReference<CinemaAdapter>(adapter);
+        this.a=new WeakReference<Activity>(a);
        // doStuff();
     }
     /*
@@ -89,10 +90,19 @@ public class HandlerDownload  implements Runnable {
             }
             f.setImage(bm);
 
+            Activity activity = null;
+            if(a.get() != null){
+                activity = a.get();
+            }
+            CinemaAdapter cinemaAdapter = null;
+            if(adapter.get()!=null){
+                cinemaAdapter=adapter.get();
+            }
 
-            a.runOnUiThread(new Runnable() {
+            final CinemaAdapter finalCinemaAdapter = cinemaAdapter;
+            activity.runOnUiThread(new Runnable() {
                 public void run() {
-                    adapter.notifyDataSetChanged();
+                    finalCinemaAdapter.notifyDataSetChanged();
                 }
             });
         }
