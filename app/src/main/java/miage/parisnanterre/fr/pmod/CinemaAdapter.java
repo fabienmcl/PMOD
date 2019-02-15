@@ -63,7 +63,17 @@ public class CinemaAdapter extends RecyclerView.Adapter<CinemaAdapter.FilmHolder
         holder.realisateur.setText(items.get(position).getReal());
         holder.date.setText(items.get(position).getDate());
         holder.nom.setText(items.get(position).getNom());
-        holder.image.setImageBitmap(items.get(position).getImage());
+
+        //holder.image.setImageBitmap(items.get(position).getImage());
+        if(!(items.get(position).getImage()==null)) {
+            holder.image.setImageBitmap(items.get(position).getImage().bitmap);
+        }
+        else{
+            holder.image.setImageResource(R.drawable.ic_launcher_background);
+        }
+
+
+
         //new DownloadImagesTask().execute(items.get(position).getImageURL());
         //holder.image.setImageResource(R.drawable.ic_launcher_background);
 

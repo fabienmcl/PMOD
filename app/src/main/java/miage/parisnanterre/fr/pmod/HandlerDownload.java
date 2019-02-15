@@ -88,7 +88,7 @@ public class HandlerDownload  implements Runnable {
             } catch (IOException e) {
                 Log.e("Hub", "Error getting the image from server : " + e.getMessage().toString());
             }
-            f.setImage(bm);
+            f.setImage(new SerialBitmap(bm));
 
             Activity activity = null;
             if(a.get() != null){

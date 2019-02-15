@@ -55,7 +55,7 @@ public class PoolThreadDownload {
                     } catch (IOException e) {
                         Log.e("Hub","Error getting the image from server : " + e.getMessage().toString());
                     }
-                    f.setImage(bm);
+                    f.setImage(new SerialBitmap(bm));
 
 
                     a.runOnUiThread(new Runnable() {
