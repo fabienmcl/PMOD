@@ -1,6 +1,7 @@
 package miage.parisnanterre.fr.pmod;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -221,6 +222,31 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 popupWindow.dismiss();
+
+                OutputStream os = null;
+                File path = getBaseContext().getFilesDir();
+                File file = new File(path, "sample.txt");
+
+                try {
+                    os = new FileOutputStream(file);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    SaveFilms.encrypt((Serializable) films, os, "key");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (NoSuchPaddingException e) {
+                    e.printStackTrace();
+                } catch (InvalidKeyException e) {
+                    e.printStackTrace();
+                }
+                /*
+                //sans clé
+
                 FileOutputStream fileout = null;
                 ObjectOutputStream out = null;
                 try {
@@ -234,32 +260,17 @@ public class MainActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                /*
-                try {
-                    //encrypt((Serializable) films,os);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                } catch (NoSuchPaddingException e) {
-                    e.printStackTrace();
-                } catch (InvalidKeyException e) {
-                    e.printStackTrace();
-                }*/
+                */
             }
         });
+
 
 
     }
     public void read() throws IOException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException {
 
-        //OutputStream os = new FileOutputStream("sampple.txt");
-        //encrypt((Serializable) filmsList,os);
-        /*List<Film> filmList = (List<Film>) decrypt(new FileInputStream("sample.txt"));
-        adapter = new CinemaAdapter(filmList);
-        adapter.notifyDataSetChanged();
-        recycler.setAdapter(adapter);
-        */
+
+        /*
         ObjectInputStream input;
         String filename = "sample.txt";
 
@@ -282,6 +293,31 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        */
+        InputStream is = null;
+        File path = getBaseContext().getFilesDir();
+        File file = new File(path, "sample.txt");
+
+        try {
+            is = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            List<Film> filmsSerial = (List<Film>) SaveFilms.decrypt(is, "key");
+            films.clear();
+            films.addAll(filmsSerial);
+            adapter.notifyDataSetChanged();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
             e.printStackTrace();
         }
 
@@ -350,6 +386,17 @@ public class MainActivity extends AppCompatActivity {
         /*for (Film f : films) {
             THREAD_POOL_EXECUTOR.execute(new HandlerDownload(films,adapter,this));
         }*/
+
+    }
+
+    public void intentCerticate(View v){
+        Intent intent = new Intent(this, CertificateActivity.class);
+        startActivity(intent);
+
+    }
+
+    public void loadJSON(View v){
+
 
     }
 

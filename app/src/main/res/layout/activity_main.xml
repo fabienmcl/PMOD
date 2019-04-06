@@ -9,11 +9,26 @@
 
 
     <Button
+        android:id="@+id/buttonIntent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Certificate"
+        android:onClick="intentCerticate"/>
+
+    <Button
         android:id="@+id/buttonDownload"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="downloadIMG"
         android:text="Download" />
+
+
+    <Button
+        android:id="@+id/buttonJson"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="loadJSON"
+        android:text="JSON" />
 
     <LinearLayout
         android:layout_width="match_parent"
